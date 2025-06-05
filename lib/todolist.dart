@@ -1,61 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_cubit/Cubit/todo_cubit.dart';
+import 'package:todo_app_cubit/Todo_model.dart';
 
 class Todolist extends StatelessWidget {
-  const Todolist({super.key});
+  Todo task;
+  Todolist({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TodoCubit, List<String>>(
-      builder: (context, state) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: state.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                    height: 60,
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    child: Text("${state[index]}"),
-                  );
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    addtask(context);
-                  },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        tileColor: Theme.of(context).colorScheme.secondary,
+        leading: Checkbox(
+          value: task.done,
+          onChanged: (value) {
+            context.read<TodoCubit>().done(task.id);
+          },
+        ),
+        title: Text(
+          task.task,
+          style: TextStyle(
+            decoration: task.done ? TextDecoration.lineThrough : null,
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            showdelete(context, task.id);
 
-                  // backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(Icons.add),
-                ),
-                SizedBox(width: 10),
-              ],
-            ),
-            SizedBox(height: 10),
-          ],
-        );
-      },
+            // context.read<TodoCubit>().delet();
+          },
+        ),
+      ),
     );
   }
 
-  void addtask(BuildContext context) {
-    TextEditingController task = TextEditingController();
+  void showdelete(BuildContext context, String id) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text("Add new task", textAlign: TextAlign.center),
+            title: Text("Remove this task?", textAlign: TextAlign.center),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -65,17 +53,44 @@ class Todolist extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  final tk = task.text.trim();
-                  if (tk.isNotEmpty) {
-                    context.read<TodoCubit>().add(tk);
-                    Navigator.of(context).pop();
-                  }
+                  Navigator.of(context).pop();
+                  context.read<TodoCubit>().delet(task.id);
                 },
-                child: Text("Add"),
+                child: Text("Remove"),
               ),
             ],
-            content: TextField(controller: task),
           ),
     );
   }
+
+  // void addtask(BuildContext context) {
+  //   TextEditingController task = TextEditingController();
+  //   showDialog(
+  //     context: context,
+  //     builder:
+  //         (context) => AlertDialog(
+  //           title: Text("Add new task", textAlign: TextAlign.center),
+  //           actions: [
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text("Cancel"),
+  //             ),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 final tk = task.text.trim();
+
+  //                 if (tk.isNotEmpty) {
+  //                   context.read<TodoCubit>().add(tk);
+  //                   Navigator.of(context).pop();
+  //                 }
+  //               },
+  //               child: Text("Add"),
+  //             ),
+  //           ],
+  //           content: TextField(controller: task),
+  //         ),
+  //   );
+  // }
 }

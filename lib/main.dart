@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app_cubit/Cubit/themecubit.dart';
 import 'package:todo_app_cubit/Cubit/todo_cubit.dart';
+import 'package:todo_app_cubit/Todo_model.dart';
 import 'package:todo_app_cubit/todolist.dart';
 
 void main() {
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData(
             brightness: Brightness.dark,
             colorScheme: ColorScheme.dark(
-              primary: Colors.pink.shade700,
+              primary: const Color.fromRGBO(194, 24, 91, 1),
               secondary: Colors.pink.shade600,
               onPrimary: Colors.pink.shade200,
             ),
@@ -68,7 +69,75 @@ class Myhomepage extends StatelessWidget {
           ),
         ],
       ),
-      body: Todolist(),
+      body: BlocBuilder<TodoCubit, List<Todo>>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child:
+                        state.length == 0
+                            ? Image.asset(
+                              "assets/task2.png",
+                              filterQuality: FilterQuality.high,
+                              alignment: Alignment(0.35, 0),
+                            )
+                            : ListView.builder(
+                              itemCount: state.length,
+                              itemBuilder: (context, index) {
+                                if (state.isNotEmpty) {
+                                  return Todolist(task: state[index]);
+                                }
+                              },
+                            ),
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment(0.9, 0.95),
+                child: FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    addtask(context);
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void addtask(BuildContext context) {
+    TextEditingController task = TextEditingController();
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text("Add new task", textAlign: TextAlign.center),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final tk = task.text.trim();
+
+                  if (tk.isNotEmpty) {
+                    context.read<TodoCubit>().add(tk);
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Text("Add"),
+              ),
+            ],
+            content: TextField(controller: task),
+          ),
     );
   }
 }
