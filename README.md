@@ -1,16 +1,18 @@
-# todo_app_cubit
+#  Flutter To-Do App with Cubit
 
-A new Flutter project.
+This is a simple **To-Do List app** built with **Flutter** and **Bloc (Cubit)** for state management. Users can:
 
-## Getting Started
+-  Add tasks
+-  Mark tasks as done
+-  Delete tasks
+-  Switch between light and dark themes
 
-This project is a starting point for a Flutter application.
+---
+##  Features
 
-A few resources to get you started if this is your first Flutter project:
+- Add tasks using a dialog box
+- Mark tasks as completed with a checkbox
+- Delete tasks with confirmation
+- Theming: Light / Dark mode switch
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  
